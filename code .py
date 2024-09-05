@@ -21,4 +21,11 @@ def interactive_plot(df):
         margin=dict(l=20, r=20, t=20, b=20),
         legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1)
     )
-    return fig """
+    return fig 
+# Function to normalize the prices based on the initial price
+def normalize(df_2):
+    df = df_2.copy()
+    for i in df.columns[1:]:
+        df[i] = df[i] / df[i].iloc[0]
+    return df
+ """
