@@ -28,4 +28,11 @@ def normalize(df_2):
     for i in df.columns[1:]:
         df[i] = df[i] / df[i].iloc[0]
     return df
+# Function to calculate daily returns
+def daily_return(df):
+    df_daily_return = df.copy()
+    for i in df.columns[1:]:
+        df_daily_return[i] = df_daily_return[i].pct_change() * 100
+    df_daily_return.fillna(0, inplace=True)
+    return df_daily_return
  """
