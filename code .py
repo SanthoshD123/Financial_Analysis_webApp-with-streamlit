@@ -35,4 +35,13 @@ def daily_return(df):
         df_daily_return[i] = df_daily_return[i].pct_change() * 100
     df_daily_return.fillna(0, inplace=True)
     return df_daily_return
+# Function to calculate beta
+def calculate_beta(stocks_daily_return, stock):
+    rm = stocks_daily_return['sp500'].mean() * 252
+    b, a = np.polyfit(stocks_daily_return['sp500'], stocks_daily_return[stock], 1)
+    return b, a
+
+st.set_page_config(page_title="CAPM", page_icon="📈", layout='wide')
+
+st.title("Capital Asset Pricing Model (CAPM)")
  """
