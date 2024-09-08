@@ -44,4 +44,12 @@ def calculate_beta(stocks_daily_return, stock):
 st.set_page_config(page_title="CAPM", page_icon="📈", layout='wide')
 
 st.title("Capital Asset Pricing Model (CAPM)")
+# Getting input from user
+col1, col2 = st.columns([1, 1])
+with col1:
+    stock_list = st.multiselect("Choose 4 stocks",
+                                ('TSLA', 'AAPL', 'NFLX', 'MSFT', 'MGM', 'AMZN', 'NVDA', 'GOOGL'),
+                                ['TSLA', 'AAPL', 'AMZN', 'GOOGL'])
+with col2:
+    year = st.number_input("Number of years", 1, 10)
  """
