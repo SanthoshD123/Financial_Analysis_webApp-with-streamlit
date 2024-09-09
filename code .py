@@ -52,4 +52,66 @@ with col1:
                                 ['TSLA', 'AAPL', 'AMZN', 'GOOGL'])
 with col2:
     year = st.number_input("Number of years", 1, 10)
+# Downloading data for SP500
+try:
+    end = datetime.date.today()
+    start = datetime.date(datetime.date.today().year - year, datetime.date.today().month, datetime.date.today().day)
+    SP500 = web.DataReader(['sp500'], 'fred', start, end)
+
+    stocks_df = pd.DataFrame()
+    for stock in stock_list:
+        data = yf.download(stock, period=f'{year}y')
+        stocks_df[f'{stock}'] = data['Close']
+
+    stocks_df.reset_index(inplace=True)
+    SP500.reset_index(inplace=True)
+    SP500.columns = ['Date', 'sp500']
+    stocks_df['Date'] = pd.to_datetime(stocks_df['Date'].apply(lambda x: str(x)[:10]))
+    stocks_df = pd.merge(stocks_df, SP500, on='Date', how='inner')
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.markdown("### Dataframe head")
+        st.dataframe(stocks_df.head(), use_container_width=True)
+    with col2:
+        st.markdown("### Dataframe tail")
+        st.dataframe(stocks_df.tail(), use_container_width=True)
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.markdown("### Price of all the Stocks")
+        st.plotly_chart(interactive_plot(stocks_df))
+    with col2:
+        st.markdown("### Price of all the Stocks (After Normalizing)")
+        st.plotly_chart(interactive_plot(normalize(stocks_df)))
+
+    stocks_daily_return = daily_return(stocks_df)
+
+    beta = {}
+    alpha = {}
+    for i in stocks_daily_return.columns:
+        if i != 'Date' and i != 'sp500':
+            b, a = calculate_beta(stocks_daily_return, i)
+            beta[i] = b
+            alpha[i] = a
+
+    beta_df = pd.DataFrame({'Stock': beta.keys(), 'Beta Value': [str(round(b, 2)) for b in beta.values()]})
+    with col1:
+        st.markdown('### Calculated Beta Value')
+        st.dataframe(beta_df, use_container_width=True)
+
+    rf = 0  # Risk-free rate
+    rm = stocks_daily_return['sp500'].mean() * 252  # Market return
+
+    return_df = pd.DataFrame()
+    return_df['Stock'] = stock_list
+    return_df['Return Value'] = [str(round(rf + (beta[stock] * (rm - rf)), 2)) for stock in stock_list]
+
+    with col2:
+        st.markdown('### Calculated Return using CAPM')
+        st.dataframe(return_df, use_container_width=True)
+
+except Exception as e:
+    st.write("Error:", str(e))
+"""
  """
