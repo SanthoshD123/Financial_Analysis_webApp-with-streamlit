@@ -114,4 +114,6 @@ try:
 except Exception as e:
     st.write("Error:", str(e))
 """
- """
+
+with open('app.py', 'w') as f:
+    f.write(code)
