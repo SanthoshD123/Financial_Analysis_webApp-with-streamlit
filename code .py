@@ -117,3 +117,6 @@ except Exception as e:
 
 with open('app.py', 'w') as f:
     f.write(code)
+
+!streamlit run app.py &>/dev/null&
+!npx localtunnel --port 8501
