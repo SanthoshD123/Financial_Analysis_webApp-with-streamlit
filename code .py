@@ -120,3 +120,5 @@ with open('app.py', 'w') as f:
 
 !streamlit run app.py &>/dev/null&
 !npx localtunnel --port 8501
+
+!curl https://loca.lt/mytunnelpassword
